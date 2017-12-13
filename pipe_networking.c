@@ -24,6 +24,11 @@ int server_handshake(int *to_client) {
 
   returns the file descriptor for the downstream pipe.
   =========================*/
-int client_handshake(int *to_server) {
+int client_handshake(int *to_server)  {
+
+  char name[50];
+  sprintf(name, "%d", getpid());
+  mkfifo(name, 0644);
   return 0;
+  
 }

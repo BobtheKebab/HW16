@@ -16,13 +16,6 @@
 
 int server_handshake(int *to_client);
 
-int client_handshake(int *to_server) {
-
-  char name[50];
-  sprintf(name, "%d", getpid());
-  mkfifo(name, 0644);
-  return 0;
-  
-}
+int client_handshake(int *to_server);
 
 #endif
