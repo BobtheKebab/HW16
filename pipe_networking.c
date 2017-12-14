@@ -26,9 +26,20 @@ int server_handshake(int *to_client) {
   =========================*/
 int client_handshake(int *to_server)  {
 
-  char name[50];
+  char name[25];
   sprintf(name, "%d", getpid());
   mkfifo(name, 0644);
+  int clt_pipe = open(name, O_RDONLY);
+
+  int srv_pipe = open("WKP", O_WRONLY);
+  write(srv_pipe, name, sizeof(name));
+
+  char temp[25];
+  read(clt_pipe, temp, sizeof(temp));
+  if (!strcmp(name, temp)) {
+    close(srv_pipe);
+  }
+  
   return 0;
   
 }
