@@ -15,12 +15,14 @@ int main() {
 
 			if(!strcmp(buffer, "exit")){
 				PRINT("[server] client disconnected");
+				close(to_client);
+				close(from_client);
 				break;
 			}
 
 			int i;
 			for(i = 0; i < strlen(buffer); i++)
-				buffer[i] += 13;
+				buffer[i] = (buffer[i] - 20) % 47;
 
 			write(to_client, buffer, BUFFER_SIZE);
 			printf("[server] sent: %s\n", buffer);
