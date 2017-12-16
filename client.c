@@ -12,7 +12,7 @@ int main() {
 	while(1){
 		printf("Type something in: ");
 		fgets(buffer, BUFFER_SIZE, stdin);
-		strchr(buffer, '\n') = '\0';
+		*strchr(buffer, '\n') = '\0';
 		write(to_server, buffer, BUFFER_SIZE);
 		printf("[client] sent: %s\n", buffer);
 		if(!strcmp(buffer, "exit")) exit(0);
