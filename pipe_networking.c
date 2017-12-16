@@ -13,7 +13,7 @@
 int server_handshake(int *to_client) {
   if(mkfifo("WKP", 0600)<0) printf("%s\n", strerror(errno));
 
-  PRINT("Opening WKP")
+  PRINT("Opening WKP");
   int from_client = open("WKP", O_RDONLY, 0);
 
   char name[HANDSHAKE_BUFFER_SIZE];
