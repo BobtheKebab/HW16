@@ -22,7 +22,7 @@ int main() {
 
 			int i;
 			for(i = 0; i < strlen(buffer); i++)
-				buffer[i] = (buffer[i] - 20) % 47;
+				buffer[i] = (buffer[i] - 20) % 47 + 33;
 
 			write(to_client, buffer, BUFFER_SIZE);
 			printf("[server] sent: %s\n", buffer);
