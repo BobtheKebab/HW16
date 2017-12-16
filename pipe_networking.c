@@ -11,20 +11,27 @@
   returns the file descriptor for the upstream pipe.
   =========================*/
 int server_handshake(int *to_client) {
-  printf("boi\n");
   if(mkfifo("WKP", 0600)<0) printf("%s\n", strerror(errno));
-  printf("opening WKP\n");
-  int srv_pipe = open("WKP", O_RDONLY, 0);
+
+  PRINT("Opening WKP")
+  int from_client = open("WKP", O_RDONLY, 0);
+
   char name[HANDSHAKE_BUFFER_SIZE];
-  printf("About to read\n");
-  read(srv_pipe, name, sizeof(name));
-  printf("%s\n", name);
-  close(srv_pipe);
+  PRINT("About to read");
+  read(from_client, name, sizeof(name));
+  printf("[server] received: %s\n", name);
+
   remove("WKP");
-  int clt_pipe = open(name, O_WRONLY, 0);
-  write(clt_pipe, name, sizeof(name));
-  *to_client = clt_pipe;
-  return clt_pipe;
+
+  *to_client = open(name, O_WRONLY, 0);
+  write(*to_client, ACK, sizeof(ACK));
+  printf("[server] sent: %s\n", ACK);
+
+  read(from_client, name, sizeof(name));
+  if (!strcmp(ACK, name)) {
+    return from_client;
+  }
+  return -1;
 }
 
 
@@ -41,18 +48,24 @@ int client_handshake(int *to_server)  {
 
   char name[HANDSHAKE_BUFFER_SIZE];
   sprintf(name, "%d", getpid());
+  PRINT("Creating private FIFO");
   mkfifo(name, 0600);
 
-  int srv_pipe = open("WKP", O_WRONLY, 0);
-  write(srv_pipe, name, sizeof(name));
+  PRINT("Connecting to server");
+  *to_server = open("WKP", O_WRONLY, 0);
+  write(*to_server, name, sizeof(name));
+  printf("[client] sent: %s\n", name);
 
-  int clt_pipe = open(name, O_RDONLY , 0);
-  
+  int from_server = open(name, O_RDONLY , 0);
+
   char temp[HANDSHAKE_BUFFER_SIZE];
-  read(clt_pipe, temp, sizeof(temp));
-  if (!strcmp(name, temp)) {
-	*to_server = srv_pipe;
-	return clt_pipe;
-  }
+  read(from_server, temp, sizeof(temp));
+  printf("[client] received: %s\n", temp);
 
+  if (!strcmp(ACK, temp)) {
+	remove(name);
+	write(*to_server, ACK, sizeof(ACK));
+	return from_server;
+  }
+  return -1;
 }
