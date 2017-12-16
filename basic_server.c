@@ -13,7 +13,10 @@ int main() {
 			read(from_client, buffer, BUFFER_SIZE);
 			printf("[server] received: %s\n", buffer);
 
-			if(!strcmp(buffer, "exit")) break;
+			if(!strcmp(buffer, "exit")){
+				PRINT("[server] client disconnected");
+				break;
+			}
 
 			int i;
 			for(i = 0; i < strlen(buffer); i++)

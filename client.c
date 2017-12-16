@@ -10,7 +10,7 @@ int main() {
 	from_server = client_handshake( &to_server );
 
 	while(1){
-		printf("Type something in: ");
+		printf("[client] Type something in: ");
 		fgets(buffer, BUFFER_SIZE, stdin);
 		*strchr(buffer, '\n') = '\0';
 		write(to_server, buffer, BUFFER_SIZE);
